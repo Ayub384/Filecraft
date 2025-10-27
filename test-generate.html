@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick PDF Test</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <h1>Quick PDF Generation Test</h1>
+    <button onclick="generateAndDownload()">Generate Test PDF</button>
+    <button onclick="generateTwoPDFs()">Generate 2 PDFs for Merging</button>
+    <div id="status"></div>
+
+    <script>
+        async function generateAndDownload() {
+            try {
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([595, 842]); // A4 size
+                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+                
+                page.drawText('Test PDF Document', {
+                    x: 50,
+                    y: 750,
+                    size: 24,
+                    font: font,
+                    color: rgb(0, 0, 0),
+                });
+                
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'test-pdf-1.pdf';
+                a.click();
+                
+                document.getElementById('status').innerHTML = '<p style="color: green;">✓ PDF generated successfully!</p>';
+                console.log('PDF bytes length:', pdfBytes.length);
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<p style="color: red;">✗ Error: ' + error.message + '</p>';
+                console.error(error);
+            }
+        }
+
+        async function generateTwoPDFs() {
+            try {
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                
+                // PDF 1
+                const pdf1 = await PDFDocument.create();
+                const page1 = pdf1.addPage([595, 842]);
+                const font1 = await pdfDoc1.embedFont(StandardFonts.Helvetica);
+                page1.drawText('First PDF', { x: 50, y: 750, size: 24, font: font1, color: rgb(0, 0, 0) });
+                const bytes1 = await pdf1.save();
+                const blob1 = new Blob([bytes1], { type: 'application/pdf' });
+                const url1 = URL.createObjectURL(blob1);
+                const a1 = document.createElement('a');
+                a1.href = url1;
+                a1.download = 'test-pdf-1.pdf';
+                a1.click();
+                
+                // PDF 2
+                const pdf2 = await PDFDocument.create();
+                const page2 = pdf2.addPage([595, 842]);
+                const font2 = await pdf2.embedFont(StandardFonts.Helvetica);
+                page2.drawText('Second PDF', { x: 50, y: 750, size: 24, font: font2, color: rgb(0, 0, 0) });
+                const bytes2 = await pdf2.save();
+                const blob2 = new Blob([bytes2], { type: 'application/pdf' });
+                const url2 = URL.createObjectURL(blob2);
+                const a2 = document.createElement('a');
+                a2.href = url2;
+                a2.download = 'test-pdf-2.pdf';
+                a2.click();
+                
+                document.getElementById('status').innerHTML = '<p style="color: green;">✓ Two PDFs generated! Try merging them.</p>';
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<p style="color: red;">✗ Error: ' + error.message + '</p>';
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

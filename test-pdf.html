@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Test</title>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <h1>PDF Generation Test</h1>
+    <button onclick="testSimplePDF()">Test Simple PDF</button>
+    <button onclick="testTextPDF()">Test Text PDF</button>
+    <div id="result"></div>
+
+    <script>
+        async function testSimplePDF() {
+            try {
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage();
+                const { width, height } = page.getSize();
+                
+                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+                
+                page.drawText('Hello World!', {
+                    x: 50,
+                    y: height - 50,
+                    size: 30,
+                    font: font,
+                    color: rgb(0, 0, 0),
+                });
+                
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'test-simple.pdf';
+                a.click();
+                
+                document.getElementById('result').innerHTML = '<p style="color: green;">Simple PDF generated successfully!</p>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                console.error(error);
+            }
+        }
+
+        async function testTextPDF() {
+            try {
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage();
+                const { width, height } = page.getSize();
+                
+                const font = await pdfDoc.embedFont(StandardFonts.Courier);
+                
+                const lines = ['Line 1', 'Line 2', 'Line 3'];
+                let y = height - 50;
+                
+                for (const line of lines) {
+                    page.drawText(line, {
+                        x: 50,
+                        y: y,
+                        size: 12,
+                        font: font,
+                        color: rgb(0, 0, 0),
+                    });
+                    y -= 20;
+                }
+                
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'test-text.pdf';
+                a.click();
+                
+                document.getElementById('result').innerHTML = '<p style="color: green;">Text PDF generated successfully!</p>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = '<p style="color: red;">Error: ' + error.message + '</p>';
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
