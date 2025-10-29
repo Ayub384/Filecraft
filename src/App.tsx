@@ -127,7 +127,7 @@ function App() {
           <p className="text-xl text-dark-200 mb-14 max-w-3xl mx-auto leading-relaxed fade-in-up">
             All-in-one file toolkit with 30+ tools for image conversion, PDF editing, compression, and more.
             <br />
-            <span className="font-semibold text-white">100% browser-based</span> — no uploads, no servers, complete privacy.
+            <span className="font-semibold text-white">100% browser-based</span> — No Uploads, No Servers, Complete Privacy.
           </p>
 
           {/* Feature Pills */}
